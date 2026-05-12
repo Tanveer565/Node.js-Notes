@@ -396,52 +396,5 @@ app.listen(1313,() => {
 
 ```
 
-Error Handling Code:-
-
-```javascript
-
-
-// Throw: When you throw an error, you are telling the JavaScript engine: 
-// "Stop everything here and find the nearest catch block."
-
-app.use("/getuserdata", (req,res) => {
-
-    //insted of throwing random error like these we are handling
-    //the error in cleaner way in the last lines with wildcard function
-    throw new Error("This is the error");
-    res.send("This is User data");
-});
-
-//you can even do this to hndle error in specific route itself
-app.use("/getuserdata", (err,req,res,next) => {
-    try{
-        throw new Error("This is the error");
-        res.send("This is User data");
-        res.send("This is User data");
-    }
-    catch{
-        res.status(500).send("Error Ocurred here!");
-    }
-//You can even handle your error here itself
-
-    
-    
-});
-
-
-
-// 2. The Global Error Handler
-// Note the 4 arguments: err, req, res, next
-//Seperate handler for the error
-//err , req , res , next => this order matters
-//It will handle error for any of the route if they have error
-app.use("/", (err,req,res,next) => {
-    if(err){
-        res.status(500).send("Something went wrong");
-    }
-});
-
-```
-
 
 
