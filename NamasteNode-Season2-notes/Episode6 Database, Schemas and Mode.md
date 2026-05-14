@@ -28,7 +28,7 @@ then created a separate folder inside src and created a file database to create 
 
 Then we created a connection to the DB Using : //connection to the DB through the string 
 
-&#x20;     "mongodb+srv://tanveerkhan9:PSWHere@namastenode.lxfaflr.mongodb.net/devMeet"
+&#x20;     "mongodb+srv://mongodb.net/devMeet"
 
 
 
