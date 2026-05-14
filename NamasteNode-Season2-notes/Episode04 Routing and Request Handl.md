@@ -417,5 +417,33 @@ app.listen(1313,() => {
 
 ```
 
+Route Array Matching :-
 
+Express allows you to pass an array of strings as the first argument to a route handler, which essentially creates "aliases" for the same logic.
 
+Instead of writing two separate blocks of code, you are telling Express: "If the user visits path A OR path B, run this same function.
+
+Breakdown of the Syntax
+['/discussion/:slug', '/page/:slug']: This is an array containing two different path patterns.
+
+:slug: This is a Path Parameter. It acts as a variable that captures whatever is typed in that part of the URL.
+
+req.params.slug: This is how you access the captured value inside your function.
+
+ Why use this? (Real-world Scenario).
+
+ ```javascript
+app.get(['/discussion/:slug', '/page/:slug'], async (req, res) => {
+  const { slug } = req.params;
+  
+  // You can check which path was used if you need to:
+  if (req.path.startsWith('/discussion')) {
+    console.log(`Fetching discussion: ${slug}`);
+  } else {
+    console.log(`Fetching page: ${slug}`);
+  }
+
+  res.status(200).send(`You are viewing the ${slug} content`);
+});
+```
+Imagine you are building a website where a "slug" (a URL-friendly title) could represent either a forum discussion or a static informational page. If the logic for displaying them is very similar—such as fetching data from a database using that slug—using an array keeps your code DRY (Don't Repeat Yourself).
