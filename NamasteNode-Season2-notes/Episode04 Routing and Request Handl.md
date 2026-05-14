@@ -212,6 +212,22 @@ Then itested some http request with different methods like grt and post which gi
 
 And remember order still matter so do not place the same router with use() before giving it the get() or post().
 
+In Express, app.use("/thanks", ...) acts as a "prefix match." It will trigger for:
+
+/thanks
+
+/thanks/buddy
+
+/thanks/a-million/friend
+
+The "Why" (How app.use works)
+app.use is designed for middleware. Because middleware often needs to apply to entire "folders" or sections of a site (like an /admin panel), Express matches any path that starts with the string you provide.
+
+Key Distinctions in Express v5
+While your code works for prefix matching, here is how you control it more precisely:
+
+1. Exact Matching
+If you only want to respond to /thanks and not /thanks/anything, you should use a specific HTTP method (like GET):
 
 
 ```javascript
