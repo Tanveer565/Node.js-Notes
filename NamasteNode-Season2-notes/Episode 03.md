@@ -6,6 +6,27 @@ Episode: 03
 
 \##npm init to create a json config file :- index file for a project which tells you about the project meta data of the project
 
+1. npm init (The Manual Setup)
+When you run this, npm starts an interactive questionnaire in your terminal. It will ask you for:
+
+Package name: (Defaults to your folder name)
+
+Version: (Defaults to 1.0.0)
+
+Description: A short summary of your project.
+
+Entry point: (Defaults to index.js)
+
+Test command:
+
+Git repository:
+
+Keywords:
+
+Author:
+
+License: (Defaults to ISC)
+
 
 
 &#x20;     **metadata** is often defined as "data about data." It provides a summarized description of a file or piece of information to make it easier to find, manage, and use.
