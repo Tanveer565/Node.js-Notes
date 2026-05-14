@@ -102,7 +102,7 @@ const connectdb = async() => {
 
 &#x20;       //to connect direclty to db add name after /. /dbname
 
-&#x20;     "mongodb+srv://tanveerkhan9:ulKWL0dcqRMAQwYn@namastenode.lxfaflr.mongodb.net/devMeet"
+&#x20;     "mongodb+srv://mongodb.net/devMeet"
 
 );
 
