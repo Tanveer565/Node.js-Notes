@@ -373,6 +373,7 @@ app.use(/a/,(req,res) => {
 });
 
 
+//Version 5 of express now support this insted
 
 //anthing that end with fly
 
@@ -384,7 +385,9 @@ app.use(/.\*fly$/, (req, res) => {
 
 
 
-//Optional
+//Optional replace ment of ?
+//the .ext is dynamic undefind and  optional
+//Here after typing file.x.y.z x.y :-Express usually captures everything up to the last dot as the filename and the final part as the extension.
 
 app.get('/:file{.:ext}',(req, res) => {
 
@@ -395,8 +398,10 @@ app.get('/:file{.:ext}',(req, res) => {
 
 
 // if no route matched
-
-app.get('/\*splat', async (req, res) => {
+//It is the replacement of the wildcard /*
+//it used a word splat to define any param that comes
+//and you can now see it by req.param.splat
+app.get('/*splat', async (req, res) => {
 
 &#x20; res.send("Page not found!");
 
