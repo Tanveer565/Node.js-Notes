@@ -182,7 +182,9 @@ In a Response, the body usually contains the HTML code for the webpage or the da
 
 \* \*\*200 OK:\*\* The request was successful.
 
-\* \*\*301 Moved Permanently:\*\* The resource is now at a different URL.
+\* \*\*301 Moved Permanently:\*\* this tells that The resource is now at a different URL.
+
+\* \*\*302 Moved Temporarly:\*\* this tells that The resource is at a different URL for short time and soon will redirect.
 
 \* \*\*400 Bad Request:\*\* The server couldn't understand the request.
 
