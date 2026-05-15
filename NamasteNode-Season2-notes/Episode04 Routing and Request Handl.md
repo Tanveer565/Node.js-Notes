@@ -330,28 +330,36 @@ app.use("/employ/:employid/:employPass",(req,res) => {
 
 
 
-// app.use("/employ",(req,res) => {
+// 1. Check your URL Syntax
+// To make your code work, your URL must look like this:
+// localhost:3000/employ?employId=101&pass=myPassword123
 
-//     //Reading the userid the queryParam in route handler
+// The ? starts the query string.
 
-//     //this req.query will you the info about the queryparam(userid)
+// The & separates different parameters.
 
-//     const { employId } = req.query;
+// The names (employId and pass) must match your destructuring exactly.
+app.use("/employ",(req,res) => {
 
-//     console.log(employId);
+    //Reading the userid the queryParam in route handler
+
+    //this req.query will you the info about the queryparam(userid)
+
+    const { employId } = req.query;
+
+    console.log(employId);
 
 
 
-//     //for password
+    //for password
 
-//     const { pass } = req.query;
+    const { pass } = req.query;
 
-//     console.log(pass);
+    console.log(pass);
 
-//     res.send("Welcome to employ!");
+    res.send("Welcome to employ!");
 
-// });
-
+});
 
 
 //Path Routing mathch syntax
