@@ -182,7 +182,9 @@ In a Response, the body usually contains the HTML code for the webpage or the da
 
 \* \*\*200 OK:\*\* The request was successful.
 
-\* \*\*301 Moved Permanently:\*\* The resource is now at a different URL.
+\* \*\*301 Moved Permanently:\*\* this tells that The resource is now at a different URL.
+
+\* \*\*302 Moved Temporarly:\*\* this tells that The resource is at a different URL for short time and soon will redirect.
 
 \* \*\*400 Bad Request:\*\* The server couldn't understand the request.
 
@@ -212,6 +214,22 @@ Then itested some http request with different methods like grt and post which gi
 
 And remember order still matter so do not place the same router with use() before giving it the get() or post().
 
+In Express, app.use("/thanks", ...) acts as a "prefix match." It will trigger for:
+
+/thanks
+
+/thanks/buddy
+
+/thanks/a-million/friend
+
+The "Why" (How app.use works)
+app.use is designed for middleware. Because middleware often needs to apply to entire "folders" or sections of a site (like an /admin panel), Express matches any path that starts with the string you provide.
+
+Key Distinctions in Express v5
+While your code works for prefix matching, here is how you control it more precisely:
+
+1. Exact Matching
+If you only want to respond to /thanks and not /thanks/anything, you should use a specific HTTP method (like GET):
 
 
 ```javascript
@@ -312,28 +330,36 @@ app.use("/employ/:employid/:employPass",(req,res) => {
 
 
 
-// app.use("/employ",(req,res) => {
+// 1. Check your URL Syntax
+// To make your code work, your URL must look like this:
+// localhost:3000/employ?employId=101&pass=myPassword123
 
-//     //Reading the userid the queryParam in route handler
+// The ? starts the query string.
 
-//     //this req.query will you the info about the queryparam(userid)
+// The & separates different parameters.
 
-//     const { employId } = req.query;
+// The names (employId and pass) must match your destructuring exactly.
+app.use("/employ",(req,res) => {
 
-//     console.log(employId);
+    //Reading the userid the queryParam in route handler
+
+    //this req.query will you the info about the queryparam(userid)
+
+    const { employId } = req.query;
+
+    console.log(employId);
 
 
 
-//     //for password
+    //for password
 
-//     const { pass } = req.query;
+    const { pass } = req.query;
 
-//     console.log(pass);
+    console.log(pass);
 
-//     res.send("Welcome to employ!");
+    res.send("Welcome to employ!");
 
-// });
-
+});
 
 
 //Path Routing mathch syntax
@@ -357,6 +383,7 @@ app.use(/a/,(req,res) => {
 });
 
 
+//Version 5 of express now support this insted
 
 //anthing that end with fly
 
@@ -368,7 +395,9 @@ app.use(/.\*fly$/, (req, res) => {
 
 
 
-//Optional
+//Optional replace ment of ?
+//the .ext is dynamic undefind and  optional
+//Here after typing file.x.y.z x.y :-Express usually captures everything up to the last dot as the filename and the final part as the extension.
 
 app.get('/:file{.:ext}',(req, res) => {
 
@@ -379,8 +408,10 @@ app.get('/:file{.:ext}',(req, res) => {
 
 
 // if no route matched
-
-app.get('/\*splat', async (req, res) => {
+//It is the replacement of the wildcard /*
+//it used a word splat to define any param that comes
+//and you can now see it by req.param.splat
+app.get('/*splat', async (req, res) => {
 
 &#x20; res.send("Page not found!");
 
@@ -396,5 +427,33 @@ app.listen(1313,() => {
 
 ```
 
+Route Array Matching :-
 
+Express allows you to pass an array of strings as the first argument to a route handler, which essentially creates "aliases" for the same logic.
 
+Instead of writing two separate blocks of code, you are telling Express: "If the user visits path A OR path B, run this same function.
+
+Breakdown of the Syntax
+['/discussion/:slug', '/page/:slug']: This is an array containing two different path patterns.
+
+:slug: This is a Path Parameter. It acts as a variable that captures whatever is typed in that part of the URL.
+
+req.params.slug: This is how you access the captured value inside your function.
+
+ Why use this? (Real-world Scenario).
+
+ ```javascript
+app.get(['/discussion/:slug', '/page/:slug'], async (req, res) => {
+  const { slug } = req.params;
+  
+  // You can check which path was used if you need to:
+  if (req.path.startsWith('/discussion')) {
+    console.log(`Fetching discussion: ${slug}`);
+  } else {
+    console.log(`Fetching page: ${slug}`);
+  }
+
+  res.status(200).send(`You are viewing the ${slug} content`);
+});
+```
+Imagine you are building a website where a "slug" (a URL-friendly title) could represent either a forum discussion or a static informational page. If the logic for displaying them is very similar—such as fetching data from a database using that slug—using an array keeps your code DRY (Don't Repeat Yourself).
