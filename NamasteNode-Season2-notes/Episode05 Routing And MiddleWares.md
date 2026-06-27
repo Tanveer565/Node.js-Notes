@@ -6,9 +6,15 @@ Q: What if there is no response in the router?
 
 A: 1. The "Hanging" Request
 
-&#x20;     When a request hits your server, Express opens a connection. If your code finishes executing the logic but never calls a response method, the server stays "silent." The browser will show a spinning loading icon for about 2 minutes (the default timeout) before finally giving up and showing a "Gateway Timeout" or "Empty Response" error.
+&#x20;   1. The Waiting Game (Pending State)
+Once the request is sent, the client enters a "pending" state. It keeps a network socket open, listening for data to come back. To the user, this usually looks like a spinning loading wheel or a status bar stuck near the beginning.
 
+2. Network Timeouts
+Clients don't wait forever. They operate on strict timers called timeouts. If the server doesn't respond within a set window, the client unilaterally decides to give up.
 
+There are two primary types of timeouts that can occur:
+
+Gateway/Proxy Timeout (504): If your request goes through an intermediary (like Nginx, AWS Cloudflare, or a load balancer) and the backend server takes too long to answer, the intermediary will cut the connection and send a 504 Gateway Timeout error back to the client.
 
 ```javascript
 
