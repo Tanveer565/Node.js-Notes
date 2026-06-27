@@ -2,7 +2,7 @@ Episode:05 Routing And MiddleWares
 
 
 
-Q: What if here is no response in the router?
+Q: What if there is no response in the router?
 
 A: 1. The "Hanging" Request
 
