@@ -70,7 +70,7 @@ app.use("/user", (req,res,next) =>{
 
 
 
-Bu if you pass the response two times like this in eg.2 then there will a error because the response has been already send and the tcp connection is closed so error will occur. but you will still get the response meanwhile the error will be in the terminal.
+But if you pass the response two times like this in eg.2 then there will an error because the response has already been sent and the tcp connection is closed so an error will occur.the client will still get the response meanwhile the error will be in the server, backend or terminal.
 
 
 
@@ -106,7 +106,7 @@ app.use("/user", (req,res,next) =>{
 
 
 
-You can pass as many route handler for one route as you want but then you have to use next for every handler expect the last handler because if you do use next even at the last it throw cannot get error as there is no route handler.
+You can pass as many route handlers for one route as you want but then you have to use next for every handler to pass the chain of handlers except the last handler because if you do use next even at the last it throw cannot get error as there is no route handler.
 
 
 
@@ -202,29 +202,28 @@ app.use("/user",
 
 
 
-Q: how the express  handles request behind the scenes ?
+Q: how expressjs handles request behind the scenes ?
 
 A: Behind the scenes, Express operates as a linear pipeline of functions. When a request hits your server, Express doesn't just "jump" to the right route; it passes that request through every piece of middleware you've defined, one by one, in the exact order you wrote them.
 
-
+For detail express behind the scenes:-
+https://medium.com/@nath.chandan1385/how-express-js-really-works-under-the-hood-4d6dd7b6bee7
 
 ###### middleware :
 
 In short, middleware is a function that sits between the Request coming in and the Response going out. It acts like a checkpoint or a "middleman" that can inspect, modify, or even stop the request before it reaches your final route handler.
 
-in chain of route handler every route handler at the middle without response.
+in chain of routes every route at the middle not giving response is a middleware.
 
 
 
 ###### route handler: 
 
-the final one that gives the response.
-
+the final route handler that gives you the response.
 
 
 Note: Express handles or takes a request and goes throw the middleware chain it goes one after the and finally
-
-give the response from the route handler that is giving some response this is the work of express. and in case when it does not find a route handler in chain after some next it will throw an error, and if there is no response even at the end the request will just hanging out there.
+give the response from the route handler that is giving sending response according too the request. and in case when it does not find a route handler in chain after some next it will throw an error, and if there is no response even at the end the request will just hanging out there.
 
 
 
