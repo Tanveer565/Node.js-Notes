@@ -117,7 +117,7 @@ app.get("/user", async (req,res) => {
 
 &#x20;   //It gives the one document by his unique id (uses findOne as middleware)
 
-&#x20;   // const user = await User.findById({email: userEmail});
+&#x20;   // const user = await User.findById(_id);
 
 
 
