@@ -1,5 +1,8 @@
 Episode07 - Diving into the APIs
 
+###### JSON :-
+              JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate. It is based on a subset of the JavaScript Programming Language Standard ECMA-262 3rd Edition - December 1999. JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages, including C, C++, C#, Java, JavaScript, Perl, Python, and many others. These properties make JSON an ideal data-interchange language.
+
 
 
 ###### JSON Vs JavaScript Object:-
@@ -28,15 +31,15 @@ JavaScript Objects can include methods and complex logic, but JSON is limited to
 
 
 
-Note :- If you get error while connecting to the cluster try the IP 0.0.0./0
+Note :- If you get error while connecting to the cluster try setting the IP 0.0.0./0
 
 
 
-Sending a User from request:-
+Sending a User data from request:-
 
 
 
-in postman there is a body section where in raw - json you can send json data from the postman so just created som json data and send it using post
+in postman there is a body section where in raw - json you can send json data from the postman so just created some json data and send it using post
 
 
 
