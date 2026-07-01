@@ -13,8 +13,14 @@ DataBase validation and input sensitisation is needed to make our API and app se
 In our app the api which saves the data into the database should be checked and validated first there are two api signup and patch which takes the data and saves it
 
 
+Validation types:-
 
-Code:- Schema validation
+1) In schema : Schema level validation
+
+2) In api : Api level validation
+
+
+
 
 
 
