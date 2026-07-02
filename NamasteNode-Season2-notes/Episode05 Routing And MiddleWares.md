@@ -1,0 +1,412 @@
+Episode:05 Routing And MiddleWares
+
+
+
+Q: What if there is no response in the router?
+
+A: 1. The "Hanging" Request
+
+&#x20;   1. The Waiting Game (Pending State)
+Once the request is sent, the client enters a "pending" state. It keeps a network socket open, listening for data to come back. To the user, this usually looks like a spinning loading wheel or a status bar stuck near the beginning.
+
+2. Network Timeouts
+Clients don't wait forever. They operate on strict timers called timeouts. If the server doesn't respond within a set window, the client unilaterally decides to give up.
+
+There are two primary types of timeouts that can occur:
+
+Gateway/Proxy Timeout (504): If your request goes through an intermediary (like Nginx, AWS Cloudflare, or a load balancer) and the backend server takes too long to answer, the intermediary will cut the connection and send a 504 Gateway Timeout error back to the client.
+
+```javascript
+
+
+
+app.use("/user", (req,res) =>{
+
+&#x20;   console.log("This is the first request!");
+
+&#x20;   //No response
+
+})
+
+
+
+```
+
+
+
+##### Next() :-
+
+
+
+in express for a single route there can be a multiple route handlers as many as you want but they should use the function next to pass the reqest to the next route 
+
+
+
+
+
+```javascript
+
+//eg.1
+
+app.use("/user", (req,res,next) =>{
+
+&#x20;   console.log("This is the first route handler!!");
+
+&#x20;   next();
+
+&#x20;   //No response
+
+},(req,res) =>{
+
+&#x20;   console.log("This is the Second route handler!!");
+
+&#x20;   res.send("The respons!");
+
+});
+
+
+
+```
+
+
+
+But if you pass the response two times like this in eg.2 then there will an error because the response has already been sent and the tcp connection is closed so an error will occur.the client will still get the response meanwhile the error will be in the server, backend or terminal.
+
+
+
+```javascript
+
+//eg.2
+
+
+
+app.use("/user", (req,res,next) =>{
+
+&#x20;   console.log("This is the first route handler!!");
+
+&#x20;   res.send("The respons!");
+
+&#x20;   next();
+
+&#x20;   res.send("The respons!"); //in this case also
+
+},(req,res) =>{
+
+&#x20;   console.log("This is the Second route handler!!");
+
+&#x20;   res.send("The respons2!");
+
+});
+
+
+
+
+
+```
+
+
+
+You can pass as many route handlers for one route as you want but then you have to use next for every handler to pass the chain of handlers except the last handler because if you do use next even at the last it throw cannot get error as there is no route handler.
+
+
+
+```javascript
+
+
+
+app.use("/user", (req,res,next) =>{
+
+&#x20;   console.log("This is the 1st route handler!!");
+
+&#x20;   next();
+
+},(req,res,next) =>{
+
+&#x20;   console.log("This is the 2nd route handler!!");
+
+&#x20;   next();
+
+},(req,res,next) =>{
+
+&#x20;   console.log("This is the 3rd route handler!!");
+
+&#x20;   next();
+
+},(req,res,next) =>{
+
+&#x20;   console.log("This is the 4rt route handler!!");
+
+&#x20;   res.send("this is a great response");
+
+});
+
+
+
+//You can even group thses handler into an array as you want
+
+
+
+//like { rh1, \[rh2,rh3] rh4}
+
+
+
+```
+
+
+
+You can even use the next function for the complete separate router with same or differ paths something like that
+
+
+
+```javascript
+
+app.use("/",(req,res,next) => {
+
+&#x20;   next();
+
+});
+
+
+
+app.use("/user", 
+
+&#x20;   (req, res, next) => {
+
+&#x20;       console.log("handling /user route");
+
+&#x20;       next(); // <--- THIS is the key to reaching the next function
+
+&#x20;   },
+
+&#x20;   (req, res, next) => {
+
+&#x20;       res.send("route handle at 2nd");
+
+&#x20;       // The chain ends here because res.send() was called.
+
+&#x20;   },
+
+&#x20;   (req, res, next) => {
+
+&#x20;       // This will NEVER be called because the previous one sent a response.
+
+&#x20;       res.send("route handle at 3rd");
+
+&#x20;   }
+
+);
+
+
+
+```
+
+
+
+Q: how expressjs handles request behind the scenes ?
+
+A: Behind the scenes, Express operates as a linear pipeline of functions. When a request hits your server, Express doesn't just "jump" to the right route; it passes that request through every piece of middleware you've defined, one by one, in the exact order you wrote them.
+
+For detail express behind the scenes:-
+https://medium.com/@nath.chandan1385/how-express-js-really-works-under-the-hood-4d6dd7b6bee7
+
+###### middleware :
+
+In short, middleware is a function that sits between the Request coming in and the Response going out. It acts like a checkpoint or a "middleman" that can inspect, modify, or even stop the request before it reaches your final route handler.
+
+in chain of routes every route at the middle not giving response is a middleware.
+
+
+
+###### route handler: 
+
+the final route handler that gives you the response.
+
+
+Note: Express handles or takes a request and goes throw the middleware chain it goes one after the and finally
+give the response from the route handler that is giving sending response according too the request. and in case when it does not find a route handler in chain after some next it will throw an error, and if there is no response even at the end the request will just hanging out there.
+
+
+
+###### How middleware is important :-
+
+
+
+Now here middleware work we are basically checking for admin in one midleware and then giving next and then no need to write code again and code will be passes through the middlewares.
+
+
+
+also if suppose there are multiple paths for admin/… then if you have put the auth middleware at very first   
+
+like for only /admin and the request came for the /user then all paths related to the admin will gonna be ignored.
+
+
+
+Now for the auth function in the code I have created it in the different folder named middleware/auth.js and now, I will export it so I can use it wherever I wan to.
+
+
+
+##### Code:-
+
+```javascript
+
+
+
+&#x20;   //logic to check if the useer is authorized or if the request is authorised
+
+&#x20;   const tocken = "xyz";
+
+&#x20;   const isAuthorized = tocken === "xyz";
+
+&#x20;   if(!isAuthorized){
+
+&#x20;       res.status(401).send("Unauthorised Request");
+
+&#x20;   }
+
+&#x20;   else{
+
+&#x20;       next();
+
+&#x20;   }
+
+};
+
+module.exports = {adminAuth};
+
+
+
+const express = require("Express");
+
+const { MongoNotConnectedError } = require("mongodb");
+
+
+
+
+
+const app = express();
+
+
+
+
+
+const { adminAuth,userAuth } = require("./middlewares/auth");
+
+
+
+
+
+//now he code checks he auth here but you can make
+
+//make path for user even without being checked like 
+
+// for user login
+
+app.post("/user/login",(req,res) => {
+
+&#x20;   res.send("This is the login page!")
+
+})
+
+
+
+//making for user
+
+app.get("/user",userAuth,(req,res,next) => {
+
+&#x20;   //only go to this route if auth is valid
+
+&#x20;   res.send("user Send");
+
+});
+
+
+
+//use = handling all middleware for any http method.
+
+
+
+//this middleware will only get checked if the admin is authorise otherwise
+
+//it will not even reach till here and just throw an error.
+
+app.use("/admin",adminAuth);
+
+
+
+app.get("/admin/getalldata",(req,res) => {
+
+&#x20;   //only go to this route if auth is valid
+
+&#x20;   res.send("All data Send");
+
+});
+
+
+
+app.get("/admin/deleteuser",(req,res) => {
+
+&#x20;   res.send("Deleted the user");
+
+});
+
+
+
+
+
+app.listen(1313,() => {
+
+&#x20;   console.log("The Server is listening on the port 1313");
+
+});
+
+```
+Error Handling Code:-
+
+```javascript
+
+
+// Throw: When you throw an error, you are telling the JavaScript engine: 
+// "Stop everything here and find the nearest catch block."
+
+app.use("/getuserdata", (req,res) => {
+
+    //insted of throwing random error like these we are handling
+    //the error in cleaner way in the last lines with wildcard function
+    throw new Error("This is the error");
+    res.send("This is User data");
+});
+
+//you can even do this to hndle error in specific route itself
+app.use("/getuserdata", (err,req,res,next) => {
+    try{
+        throw new Error("This is the error");
+        res.send("This is User data");
+        res.send("This is User data");
+    }
+    catch{
+        res.status(500).send("Error Ocurred here!");
+    }
+//You can even handle your error here itself
+
+    
+    
+});
+
+
+
+// 2. The Global Error Handler
+// Note the 4 arguments: err, req, res, next
+//Seperate handler for the error
+//err , req , res , next => this order matters
+//It will handle error for any of the route if they have error
+app.use("/", (err,req,res,next) => {
+    if(err){
+        res.status(500).send("Something went wrong");
+    }
+});
+
+```
+
+
+
+
