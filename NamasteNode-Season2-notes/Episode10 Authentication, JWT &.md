@@ -266,6 +266,19 @@ userSchema.methods.validatePassword = async function(passwordInputByUser){
 
 ```
 
+I also created a send connection api which I can now use after authenticating with the userAuth middleware:-
+
+```javascript
+
+app.use("/sendConnctionRequest", userAuth, async(req,res) => {
+    const user = req.user;
+
+    res.send(`${user.firstName} ${user.lastName} sent the connction request!!`);
+
+});
+
+```
+
 That's it all in the episode 10
 
 
