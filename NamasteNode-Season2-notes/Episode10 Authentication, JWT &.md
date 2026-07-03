@@ -212,10 +212,61 @@ app.get("/profile", async (req,res) => {
 
 ```
 
+UserAuth:- then I added the userAuth in the middleware folder so it can available for any api and we just have to write userAuth.
+
+Code:- 
+```javascript
+const userAuth = async (req,res,next) => {
+   try{
+           const {tocken} = req.cookies;
+   
+           if(!tocken){
+               throw new Error("Invalid tocken!!");
+           }
+   
+           //validating the tocken
+           const decodeMessage = await jwt.verify(tocken,"secret");
+           const {_id} = decodeMessage;
+   
+           const user = await User.findById(_id);
+            if(!user){
+               throw new Error("User does not exist!!");
+           }
+           req.user = user;
+           next();
+       }
+       catch (err) {
+           res.status(400).send("Error: "+ err.message);
+       }
+
+```
+
+After it I offloaded some works like generating the jwt tocken and comparing the password to the userschema file as they are close to the user:-
+
+code:-
+
+```javascript
+
+//helper functions
+userSchema.methods.getJWT = async function(){
+    const user = this;
+
+     const tocken = await jwt.sign({_id: user._id}, "DEV@meet$786",{ expiresIn: "1d" });
+
+     return tocken;
+}
+
+userSchema.methods.validatePassword = async function(passwordInputByUser){
+    const user = this;
+    const passwordHash = this.password;
+    const isPasswordValid = await bcrypt.compare(passwordInputByUser, passwordHash);
+    return isPasswordValid;
+}
 
 
+```
 
-
+That's it all in the episode 10
 
 
 
