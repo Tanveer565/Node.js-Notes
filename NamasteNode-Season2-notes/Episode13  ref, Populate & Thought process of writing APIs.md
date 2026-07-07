@@ -6,10 +6,6 @@ Episode-13 - ref, Populate \& Thought process of writing APIs
 
 Plan your API first:
 
-
-
-
-
 ###### review Connection request API:-
 
 
@@ -116,7 +112,7 @@ requestRouter.post("/request/review/:status/:requestId", userAuth, async(req,res
 
 
 
-###### user/requests API in userRouter:-
+###### /user/requestS/recieved API in userRouter:-
 
 
 
@@ -134,67 +130,142 @@ const userRouter = express.Router();
 
 //user request API
 
-userRouter.get("/user/requests", userAuth, async (req,res) => {
-
-&#x20;   //plan the api
-
-&#x20;   //validate the logged in user
-
-&#x20;   //find the connection request in which the logged in user is toUser
-
-&#x20;   //find the request with the interested field only
-
-&#x20;   //send the all connection with interested code to the user
+const express = require("express");
+const { userAuth } = require("../middlewares/auth");
+const { ConnectionRequest } = require("../models/connectionRequest");
+const userRouter = express.Router();
 
 
-
+const USER_SAFE_DATA = ["firstName","lastName","photoUrl","age","gender","about","skills"];
+//Find all user request API
+userRouter.get("/user/requests/recieved", userAuth, async (req,res) => {
 try {
 
-&#x20;   const logedInUser = req.user;
+    const logedInUser = req.user;
+    const connectionRequest = await ConnectionRequest.find({
+        toUserId: logedInUser._id,
+        status: "interested"
+    }).populate("fromUserId",USER_SAFE_DATA);
+    //populate("fromUserId","firstName lastName photoUrl age gender about skills") you can also pass like string
+    
 
-&#x20;   const connectionRequest = await ConnectionRequest.find({
-
-&#x20;       toUserId: logedInUser.\_id,
-
-&#x20;       status: "interested"
-
-&#x20;   });
-
-&#x20;   if(!connectionRequest){
-
-&#x20;       return resizeBy.status(404).json({message: "No request found!"});
-
-&#x20;   }
-
-
-
-&#x20;   res.json({
-
-&#x20;       message: "Request found",
-
-&#x20;       connectionRequest
-
-&#x20;   });
-
-
-
-&#x20;   } 
-
+    if(!connectionRequest){
+        return res.status(404).json({message: "No request found!"});
+    }
+    res.json({
+        Request: connectionRequest
+    });} 
 catch (err) {
-
-&#x20;       res.status(400).send("Error: "+err.message);
-
-&#x20;   }
-
+        res.status(400).send("Error: "+err.message);
+    }
 });
 
+//find all user connections API
+userRouter.get("/user/connections",userAuth, async (req,res) => {
+    try {
 
+        const loggedInUser = req.user;
+
+        const connectionRequests = await ConnectionRequest.find({
+            $or: [
+                {fromUserId: loggedInUser._id, status: "accepted"},
+                {toUserId: loggedInUser._id, status: "accepted"}
+            ]
+            //populate both the case:
+        }).populate("fromUserId",USER_SAFE_DATA).populate("toUserId",USER_SAFE_DATA);
+
+        if(!connectionRequests){
+            return res.status(404).json({message: "You have no connections"});
+        }
+
+        //we do not need the extra field present in req so we will map it
+        //do not forget to use toString otherwise the code will try to 
+        //match mongo object id which  will not be equal
+        const data = connectionRequests.map((row) => {
+           if(row.fromUserId._id.toString() === loggedInUser._id.toString()){
+            return row.toUserId;
+           }
+           return row.fromUserId;
+        });
+
+        res.json({
+            data: data
+        })
+        
+    } catch (err) {
+        res.status(400).send("Error: "+err.message);
+    }
+});
 
 module.exports = {userRouter};
 
-
-
+//using ref in from and to userId:
+fromUserId:{
+        type: mongoose.Schema.Types.ObjectId,
+        //creating reference to the user collection
+        ref:"User",
+        required: true,
+    },
+    toUserId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required: true,
 ```
+
+###### Ref and Populate:-
+
+
+ref:- is how you define a relationship in a schema or you make a connection between the models
+
+populate() is how you replace a stored reference with the actual document from the other collection.
+A common pattern looks like this:
+
+import mongoose from 'mongoose';
+
+```javascript
+const { Schema, SchemaTypes, model } = mongoose;
+
+const userSchema = new Schema({
+  name: String,
+  email: String,
+});
+
+const blogSchema = new Schema({
+  title: String,
+  author: {
+    type: SchemaTypes.ObjectId,
+    ref: 'User',
+  },
+});
+
+const User = model('User', userSchema);
+const Blog = model('Blog', blogSchema);
+```
+
+Then you store a reference:
+
+```javascript
+const user = await User.create({ name: 'Jess', email: 'jess@example.com' });
+
+await Blog.create({
+  title: 'Awesome Post!',
+  author: user._id,
+});
+
+And later you populate it:
+
+const post = await Blog.findOne({ title: 'Awesome Post!' }).populate('author');
+console.log(post.author);
+```
+That turns author from an ObjectId into the full User document.
+
+A few important notes:-
+
+ref points to the model name, such as 'User'.
+The field being referenced is usually an ObjectId.
+populate() performs an additional query to fetch the referenced document.
+You can also populate arrays of references.
+
 
 
 
