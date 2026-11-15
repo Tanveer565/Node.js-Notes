@@ -34,7 +34,7 @@ package-lock.json:- Locks down the exact version of every single sub-dependency.
 
 
 
-##### Order of Routes Matter :-
+#### Order of Routes Matter :-
 
 
 
@@ -78,7 +78,7 @@ Even if you just write /hello in first line it going to look for hello/bro only
 
 
 
-#### HTTP :-
+# HTTP :-
 
 
 
@@ -92,7 +92,7 @@ Think of it as the common language that allows different devices to talk to each
 
 
 
-###### The HTTP Protocol: How It Works
+## The HTTP Protocol: How It Works
 
 HTTP follows a simple Request-Response cycle. It is "stateless," meaning the server doesn't remember who you are from one request to the next unless additional tools (like cookies) are used.
 
@@ -110,7 +110,7 @@ The Response: The server sends back an HTTP response containing the requested in
 
 
 
-###### Common HTTP Methods
+## Common HTTP Methods
 
 HTTP methods (often called "verbs") tell the server exactly what action to perform on a specific resource. While there are several, these five are the most common in modern development:
 
@@ -194,7 +194,7 @@ In a Response, the body usually contains the HTML code for the webpage or the da
 
 
 
-##### Postman :-
+## Postman :-
 
 Postman is a comprehensive platform designed for the entire lifecycle of Application Programming Interfaces (APIs), from initial design and development to testing, documentation, and monitoring. It provides a user-friendly graphical interface that allows developers to interact with APIs without needing to write custom scripts or use terminal commands.
 
