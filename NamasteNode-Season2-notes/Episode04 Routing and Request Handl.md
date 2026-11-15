@@ -387,7 +387,7 @@ app.use(/a/,(req,res) => {
 
 //anthing that end with fly
 
-app.use(/.\*fly$/, (req, res) => {
+app.all(/.*fly$/, (req, res) => {
 
 &#x20;   res.send("This is fly!");
 
@@ -399,10 +399,8 @@ app.use(/.\*fly$/, (req, res) => {
 //the .ext is dynamic undefind and  optional
 //Here after typing file.x.y.z x.y :-Express usually captures everything up to the last dot as the filename and the final part as the extension.
 
-app.get('/:file{.:ext}',(req, res) => {
-
-&#x20; res.send('File found');
-
+app.get("/:file.:ext", (req, res) => {
+  res.send(`File: ${req.params.file}, Ext: ${req.params.ext}`);
 });
 
 
