@@ -178,19 +178,19 @@ In a Response, the body usually contains the HTML code for the webpage or the da
 
 
 
-\## 5. Common HTTP Status Codes
+## 5. Common HTTP Status Codes
 
-\* \*\*200 OK:\*\* The request was successful.
+200 OK:The request was successful.
 
-\* \*\*301 Moved Permanently:\*\* this tells that The resource is now at a different URL.
+301 Moved Permanently: This tells that The resource is now at a different URL.
 
-\* \*\*302 Moved Temporarly:\*\* this tells that The resource is at a different URL for short time and soon will redirect.
+302 Moved Temporarly: This tells that The resource is at a different URL for short time and soon will redirect.
 
-\* \*\*400 Bad Request:\*\* The server couldn't understand the request.
+400 Bad Request: The server couldn't understand the request.
 
-\* \*\*404 Not Found:\*\* The requested resource does not exist.
+404 Not Found: The requested resource does not exist.
 
-\* \*\*500 Internal Server Error:\*\* The server crashed or encountered an error.
+500 Internal Server Error: The server crashed or encountered an error.
 
 
 
