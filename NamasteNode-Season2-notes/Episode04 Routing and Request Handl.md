@@ -177,8 +177,15 @@ In a Response, the body usually contains the HTML code for the webpage or the da
 \---
 
 
+## 5. Difference between app.use & app.all
 
-## 5. Common HTTP Status Codes
+• Purpose: app.use() is designed for middleware (such as logging, body parsing, or authentication). app.all() acts like a route handler that runs for any HTTP verb on a matching route.
+
+• Path Matching: Most users on Stack Overflow agree on the core path difference: app.use('/api', ...) matches /api as well as sub-paths like /api/users, whereas app.all('/api', ...) targets the exact /api route path.
+
+• Execution Order: As noted on GeeksforGeeks, middleware registered with app.use() runs in the order it is defined in the request pipeline. app.all() runs during route/method matching for that path.
+
+## 6. Common HTTP Status Codes
 
 200 OK:The request was successful.
 
